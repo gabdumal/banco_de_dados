@@ -115,22 +115,32 @@ ALTER TABLE reserva
 	UNIQUE (id_passageiro, numero_voo);
 ALTER TABLE reserva
 	ADD CONSTRAINT fk_reserva_passageiro
-	FOREIGN KEY (id_passageiro) REFERENCES passageiro(id_passageiro);
+	FOREIGN KEY (id_passageiro) REFERENCES passageiro(id_passageiro)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
 ALTER TABLE reserva
 	ADD CONSTRAINT fk_reserva_voo
-	FOREIGN KEY (numero_voo) REFERENCES voo(numero_voo);
+	FOREIGN KEY (numero_voo) REFERENCES voo(numero_voo)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
 
 ALTER TABLE voo
 	ADD COLUMN id_aeronave INTEGER NOT NULL;
 ALTER TABLE voo
 	ADD CONSTRAINT fk_voo_aeronave
-	FOREIGN KEY (id_aeronave) REFERENCES aeronave(id_aeronave);
+	FOREIGN KEY (id_aeronave) REFERENCES aeronave(id_aeronave)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
 ALTER TABLE voo
 	ADD CONSTRAINT fk_voo_aeroporto_partida
-	FOREIGN KEY (aeroporto_partida) REFERENCES aeroporto(codigo_aeroporto);
+	FOREIGN KEY (aeroporto_partida) REFERENCES aeroporto(codigo_aeroporto)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
 ALTER TABLE voo
 	ADD CONSTRAINT fk_voo_aeroporto_chegada
-	FOREIGN KEY (aeroporto_chegada) REFERENCES aeroporto(codigo_aeroporto);
+	FOREIGN KEY (aeroporto_chegada) REFERENCES aeroporto(codigo_aeroporto)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
 	
 CREATE TABLE emprego (
 	id_emprego SERIAL NOT NULL,
@@ -147,18 +157,26 @@ ALTER TABLE emprego
 	CHECK (data_fim IS NULL OR data_fim > data_inicio);
 ALTER TABLE emprego
 	ADD CONSTRAINT fk_emprego_funcionario
-	FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario);
+	FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
 ALTER TABLE emprego
 	ADD CONSTRAINT fk_emprego_aeroporto
-	FOREIGN KEY (codigo_aeroporto) REFERENCES aeroporto(codigo_aeroporto);
+	FOREIGN KEY (codigo_aeroporto) REFERENCES aeroporto(codigo_aeroporto)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
+	
+
+--- ÍNDICES
+-- ...
 
 
 --- EXCLUSÃO DAS TABELAS
 -- DROP TABLE reserva;
 -- DROP TABLE emprego;
+-- DROP TABLE voo;
 -- DROP TABLE aeroporto;
 -- DROP TABLE funcionario;
 -- DROP TABLE passageiro;
 -- DROP TABLE aeronave;
--- DROP TABLE voo;
 -- DROP TABLE bilhete;

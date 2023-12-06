@@ -1,0 +1,22 @@
+Precisamos escrever os nomes das colunas exatamente como no enunciado do tema, ou podemos usar outra formatação? No caso, escrevemo-nas em snake case.
+
+O código do aeroporto deve ser auto incrementável, ou é uma sigla no padrão ICAO?
+
+Deve haver uma "super-classe" para Funcionário e Passageiro?
+
+Devemos representar o telefone como uma entidade separada, com vários relacionamentos com o passageiro?
+
+O que é o tipo de aeronave?
+Nossa representação é de um CHAR para a classe do motor
+P - Hélice à pistão
+H - Turbo-Hélice
+F - Turbo-Fan
+J - Turbo-Jato
+
+Um voo representa a ponte aérea, ou um voo individual no tempo?
+O número do voo é auto incrementado?
+Aeroportos de partida e chegada no voo devem ser chaves estrangeiras para as tabelas aeroporto?
+Por que o voo tem um tipo de aeronave também?
+
+O número do bilhete deve ser auto incrementado?
+Número do assento pode ser inteiro ou pode ser como "25A".
