@@ -7,7 +7,8 @@ CREATE TABLE aeroporto (
 	localizacao TEXT NOT NULL
 );
 ALTER TABLE aeroporto
-	ADD CONSTRAINT pk_aeroporto PRIMARY KEY (codigo_aeroporto);
+	ADD CONSTRAINT pk_aeroporto
+	PRIMARY KEY (codigo_aeroporto);
 
 -- Funcionario
 CREATE TABLE funcionario (
@@ -18,9 +19,11 @@ CREATE TABLE funcionario (
 	salario NUMERIC(8,2) NOT NULL
 );
 ALTER TABLE funcionario
-	ADD CONSTRAINT pk_funcionario PRIMARY KEY (id_funcionario);
+	ADD CONSTRAINT pk_funcionario
+	PRIMARY KEY (id_funcionario);
 ALTER TABLE funcionario
-	ADD CONSTRAINT ck_funcionario_salario CHECK (salario > 0);
+	ADD CONSTRAINT ck_funcionario_salario
+	CHECK (salario > 0);
 
 -- Passageiro
 CREATE TABLE passageiro (
@@ -32,7 +35,8 @@ CREATE TABLE passageiro (
 	email TEXT NOT NULL
 );
 ALTER TABLE passageiro
-	ADD CONSTRAINT pk_passageiro PRIMARY KEY (id_passageiro);
+	ADD CONSTRAINT pk_passageiro
+	PRIMARY KEY (id_passageiro);
 
 -- Aeronave
 /* Classificação quanto ao tipo de motor
@@ -47,28 +51,34 @@ CREATE TABLE aeronave (
 	capacidade INTEGER NOT NULL
 );
 ALTER TABLE aeronave
-	ADD CONSTRAINT pk_aeronave PRIMARY KEY (id_aeronave);
+	ADD CONSTRAINT pk_aeronave
+	PRIMARY KEY (id_aeronave);
 ALTER TABLE aeronave
-	ADD CONSTRAINT ck_aeronave_tipo_aeronave CHECK (tipo_aeronave IN ('P', 'H', 'F', 'J'));
+	ADD CONSTRAINT ck_aeronave_tipo_aeronave
+	CHECK (tipo_aeronave IN ('P', 'H', 'F', 'J'));
 ALTER TABLE aeronave
-	ADD CONSTRAINT ck_aeronave_capacidade CHECK (capacidade > 0);
+	ADD CONSTRAINT ck_aeronave_capacidade
+	CHECK (capacidade > 0);
 
 -- Voo
 CREATE TABLE voo (
 	-- Não tenho certeza se este número deveria ser serial ou atribuído
 	numero_voo SERIAL NOT NULL,
-	aeroporto_partida INTEGER NOT NULL,
-	aeroporto_chegada INTEGER NOT NULL,
+	aeroporto_partida VARCHAR(4) NOT NULL,
+	aeroporto_chegada VARCHAR(4) NOT NULL,
 	hora_partida DATE NOT NULL,
 	hora_chegada DATE NOT NULL,
 	tipo_aeronave CHAR(1) NOT NULL
 );
 ALTER TABLE voo
-	ADD CONSTRAINT pk_voo PRIMARY KEY (numero_voo);
+	ADD CONSTRAINT pk_voo
+	PRIMARY KEY (numero_voo);
 ALTER TABLE voo
-	ADD CONSTRAINT ck_voo_tipo_aeronave CHECK (tipo_aeronave IN ('P', 'H', 'F', 'J'));
+	ADD CONSTRAINT ck_voo_tipo_aeronave
+	CHECK (tipo_aeronave IN ('P', 'H', 'F', 'J'));
 ALTER TABLE voo
-	ADD CONSTRAINT ck_voo_hora_chegada CHECK (hora_chegada > hora_partida);
+	ADD CONSTRAINT ck_voo_hora_chegada
+	CHECK (hora_chegada > hora_partida);
 
 -- Bilhete
 CREATE TABLE bilhete (
@@ -80,17 +90,75 @@ CREATE TABLE bilhete (
 	numero_voo INTEGER NOT NULL
 );
 ALTER TABLE bilhete
-	ADD CONSTRAINT pk_bilhete PRIMARY KEY (numero_bilhete);
+	ADD CONSTRAINT pk_bilhete
+	PRIMARY KEY (numero_bilhete);
 ALTER TABLE bilhete
-	ADD CONSTRAINT ck_bilhete_numero_assento CHECK (numero_assento > 0);
+	ADD CONSTRAINT ck_bilhete_numero_assento
+	CHECK (numero_assento > 0);
 ALTER TABLE bilhete
-	ADD CONSTRAINT ck_bilhete_preco_bilhete CHECK (preco_bilhete > 0);
+	ADD CONSTRAINT ck_bilhete_preco_bilhete
+	CHECK (preco_bilhete > 0);
+
+
+--- RELACIONAMENTOS
+CREATE TABLE reserva (
+	id_reserva SERIAL NOT NULL,
+	data_reserva DATE NOT NULL,
+	id_passageiro INTEGER NOT NULL,
+	numero_voo INTEGER NOT NULL
+);
+ALTER TABLE reserva
+	ADD CONSTRAINT pk_reserva
+	PRIMARY KEY (id_reserva);
+ALTER TABLE reserva
+	ADD CONSTRAINT ck_reserva_passageiro_voo
+	UNIQUE (id_passageiro, numero_voo);
+ALTER TABLE reserva
+	ADD CONSTRAINT fk_reserva_passageiro
+	FOREIGN KEY (id_passageiro) REFERENCES passageiro(id_passageiro);
+ALTER TABLE reserva
+	ADD CONSTRAINT fk_reserva_voo
+	FOREIGN KEY (numero_voo) REFERENCES voo(numero_voo);
+
+ALTER TABLE voo
+	ADD COLUMN id_aeronave INTEGER NOT NULL;
+ALTER TABLE voo
+	ADD CONSTRAINT fk_voo_aeronave
+	FOREIGN KEY (id_aeronave) REFERENCES aeronave(id_aeronave);
+ALTER TABLE voo
+	ADD CONSTRAINT fk_voo_aeroporto_partida
+	FOREIGN KEY (aeroporto_partida) REFERENCES aeroporto(codigo_aeroporto);
+ALTER TABLE voo
+	ADD CONSTRAINT fk_voo_aeroporto_chegada
+	FOREIGN KEY (aeroporto_chegada) REFERENCES aeroporto(codigo_aeroporto);
+	
+CREATE TABLE emprego (
+	id_emprego SERIAL NOT NULL,
+	data_inicio DATE NOT NULL,
+	data_fim DATE DEFAULT NULL,
+	id_funcionario INTEGER NOT NULL,
+	codigo_aeroporto VARCHAR(4) NOT NULL
+);
+ALTER TABLE emprego
+	ADD CONSTRAINT pk_emprego
+	PRIMARY KEY (id_emprego);
+ALTER TABLE emprego
+	ADD CONSTRAINT ck_emprego_data_fim
+	CHECK (data_fim IS NULL OR data_fim > data_inicio);
+ALTER TABLE emprego
+	ADD CONSTRAINT fk_emprego_funcionario
+	FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario);
+ALTER TABLE emprego
+	ADD CONSTRAINT fk_emprego_aeroporto
+	FOREIGN KEY (codigo_aeroporto) REFERENCES aeroporto(codigo_aeroporto);
 
 
 --- EXCLUSÃO DAS TABELAS
-DROP TABLE aeroporto;
-DROP TABLE funcionario;
-DROP TABLE passageiro;
-DROP TABLE aeronave;
-DROP TABLE voo;
-DROP TABLE bilhete;
+-- DROP TABLE reserva;
+-- DROP TABLE emprego;
+-- DROP TABLE aeroporto;
+-- DROP TABLE funcionario;
+-- DROP TABLE passageiro;
+-- DROP TABLE aeronave;
+-- DROP TABLE voo;
+-- DROP TABLE bilhete;
