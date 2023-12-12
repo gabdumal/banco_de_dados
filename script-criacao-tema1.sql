@@ -62,12 +62,11 @@ ALTER TABLE aeronave
 
 -- Voo
 CREATE TABLE voo (
-	-- Não tenho certeza se este número deveria ser serial ou atribuído
-	numero_voo SERIAL NOT NULL,
+	numero_voo TEXT NOT NULL,
 	aeroporto_partida VARCHAR(4) NOT NULL,
 	aeroporto_chegada VARCHAR(4) NOT NULL,
-	hora_partida DATE NOT NULL,
-	hora_chegada DATE NOT NULL,
+	hora_partida TIMESTAMP NOT NULL,
+	hora_chegada TIMESTAMP NOT NULL,
 	tipo_aeronave CHAR(1) NOT NULL
 );
 ALTER TABLE voo
@@ -82,36 +81,38 @@ ALTER TABLE voo
 
 -- Bilhete
 CREATE TABLE bilhete (
-	-- Não tenho certeza se este número deveria ser serial ou atribuído
-	numero_bilhete SERIAL NOT NULL,
-	numero_assento INTEGER NOT NULL,
+	numero_bilhete TEXT NOT NULL,
+	numero_assento TEXT NOT NULL,
 	preco_bilhete NUMERIC(7,2) NOT NULL,
 	id_passageiro INTEGER NOT NULL,
-	numero_voo INTEGER NOT NULL
+	numero_voo TEXT NOT NULL
 );
 ALTER TABLE bilhete
 	ADD CONSTRAINT pk_bilhete
 	PRIMARY KEY (numero_bilhete);
 ALTER TABLE bilhete
-	ADD CONSTRAINT ck_bilhete_numero_assento
-	CHECK (numero_assento > 0);
-ALTER TABLE bilhete
 	ADD CONSTRAINT ck_bilhete_preco_bilhete
-	CHECK (preco_bilhete > 0);
+	CHECK (preco_bilhete >= 0);
 
 
 --- RELACIONAMENTOS
+ALTER TABLE bilhete
+	ADD CONSTRAINT fk_bilhete_voo
+	FOREIGN KEY (numero_voo) REFERENCES voo(numero_voo)
+	ON UPDATE CASCADE
+	ON DELETE RESTRICT;
+
 CREATE TABLE reserva (
 	id_reserva SERIAL NOT NULL,
-	data_reserva DATE NOT NULL,
+	data_reserva TIMESTAMP NOT NULL,
 	id_passageiro INTEGER NOT NULL,
-	numero_voo INTEGER NOT NULL
+	numero_voo TEXT NOT NULL
 );
 ALTER TABLE reserva
 	ADD CONSTRAINT pk_reserva
 	PRIMARY KEY (id_reserva);
 ALTER TABLE reserva
-	ADD CONSTRAINT ck_reserva_passageiro_voo
+	ADD CONSTRAINT un_reserva_passageiro_voo
 	UNIQUE (id_passageiro, numero_voo);
 ALTER TABLE reserva
 	ADD CONSTRAINT fk_reserva_passageiro
@@ -155,6 +156,10 @@ ALTER TABLE emprego
 ALTER TABLE emprego
 	ADD CONSTRAINT ck_emprego_data_fim
 	CHECK (data_fim IS NULL OR data_fim > data_inicio);
+-- A restrição UNIQUE inclui a data de fim, por acreditarmos que um funcionário pode ter dois ou mais registros de emprego, com datas diferentes
+ALTER TABLE emprego
+	ADD CONSTRAINT un_emprego_funcionario_aeroporto_data_inicio
+	UNIQUE NULLS NOT DISTINCT (id_funcionario, codigo_aeroporto, data_fim);
 ALTER TABLE emprego
 	ADD CONSTRAINT fk_emprego_funcionario
 	FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
@@ -165,7 +170,7 @@ ALTER TABLE emprego
 	FOREIGN KEY (codigo_aeroporto) REFERENCES aeroporto(codigo_aeroporto)
 	ON UPDATE CASCADE
 	ON DELETE RESTRICT;
-	
+
 
 --- ÍNDICES
 -- ...
@@ -174,9 +179,9 @@ ALTER TABLE emprego
 --- EXCLUSÃO DAS TABELAS
 -- DROP TABLE reserva;
 -- DROP TABLE emprego;
+-- DROP TABLE bilhete;
 -- DROP TABLE voo;
 -- DROP TABLE aeroporto;
 -- DROP TABLE funcionario;
 -- DROP TABLE passageiro;
 -- DROP TABLE aeronave;
--- DROP TABLE bilhete;
