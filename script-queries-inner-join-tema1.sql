@@ -25,11 +25,14 @@ INNER JOIN passageiro pa ON bi.id_passageiro = pa.id_passageiro
 ORDER BY vo.hora_partida;
 
 -- Query 3: Retorna as reservas feitas, incluindo os detalhes dos voos associados a essas reservas e os aeroportos de partida e chegada desses voos
-SELECT r.*, v.*, ap.nome_aeroporto AS aeroporto_partida, ac.nome_aeroporto AS aeroporto_chegada
-FROM reserva r
-INNER JOIN voo v ON r.numero_voo = v.numero_voo
-INNER JOIN aeroporto ap ON v.aeroporto_partida = ap.codigo_aeroporto
-INNER JOIN aeroporto ac ON v.aeroporto_chegada = ac.codigo_aeroporto;
+SELECT re.id_reserva, re.data_reserva, re.numero_voo,
+	vo.id_aeronave, vo.tipo_aeronave,
+	vo.aeroporto_partida, vo.hora_partida, ap.nome_aeroporto AS nome_aeroporto_partida, ap.localizacao AS localizacao_aeroporto_partida,
+	vo.aeroporto_chegada, vo.hora_chegada, ac.nome_aeroporto AS nome_aeroporto_chegada, ac.localizacao AS localizacao_aeroporto_chegada
+FROM reserva re
+INNER JOIN voo vo ON re.numero_voo = vo.numero_voo
+INNER JOIN aeroporto ap ON vo.aeroporto_partida = ap.codigo_aeroporto
+INNER JOIN aeroporto ac ON vo.aeroporto_chegada = ac.codigo_aeroporto;
 
 /*
 Query 4: Retorna informações sobre os empregos dos funcionários, incluindo os detalhes dos aeroportos onde estão empregados

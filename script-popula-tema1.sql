@@ -11,7 +11,16 @@ INSERT INTO aeroporto (codigo_aeroporto, nome_aeroporto, localizacao) VALUES
 INSERT INTO funcionario (id_funcionario, nome, sobrenome, cargo, salario) VALUES
 (1, 'Natália', 'Machado', 'Piloto', 6000.00),
 (2, 'Augusto', 'Minguado', 'Comissário de Bordo', 3500.00),
-(3, 'Lorenzo', 'Pinto', 'Engenheiro de Manutenção', 4500.00);
+(3, 'Lorenzo', 'Pinto', 'Engenheiro de Manutenção', 4500.00),
+(4, 'Gabriela', 'Silva', 'Atendente de Bordo', 3000.00),
+(5, 'Ricardo', 'Santos', 'Técnico de Manutenção', 3800.00),
+(6, 'Camila', 'Almeida', 'Supervisor de Voo', 5500.00),
+(7, 'Felipe', 'Oliveira', 'Agente de Aeroporto', 3200.00),
+(8, 'Amanda', 'Ribeiro', 'Analista de Segurança', 4800.00),
+(9, 'Carlos', 'Costa', 'Despachante de Voo', 3700.00),
+(10, 'Isabela', 'Pereira', 'Assistente Administrativo', 3000.00),
+(11, 'Lucas', 'Fernandes', 'Instrutor de Voo', 6000.00),
+(12, 'Mariana', 'Gomes', 'Coordenador de Operações', 5500.00);
 
 -- Populando tabela passageiro
 INSERT INTO passageiro (id_passageiro, nome, sobrenome, endereco, telefone, email) VALUES
@@ -101,7 +110,16 @@ INSERT INTO emprego (id_emprego, data_inicio, data_fim, id_funcionario, codigo_a
 (1, '2023-01-01', NULL, 1, 'SBGR'),
 (2, '2022-02-01', '2023-03-31', 2, 'KJFK'),
 (3, '2023-03-01', NULL, 3, 'EGLL'),
-(4, '2023-07-01', NULL, 2, 'KJFK');
+(4, '2023-07-01', NULL, 2, 'KJFK'),
+(5, '2023-04-15', NULL, 4, 'SBGR'),
+(6, '2022-08-01', '2023-01-31', 5, 'EGLL'),
+(7, '2022-10-01', NULL, 6, 'SBGR'),
+(8, '2023-01-15', NULL, 7, 'KJFK'),
+(9, '2022-05-01', '2022-12-31', 8, 'EGLL'),
+(10, '2023-02-01', NULL, 9, 'SBGR'),
+(11, '2023-03-01', NULL, 10, 'KJFK'),
+(12, '2022-11-01', '2023-06-30', 11, 'EGLL'),
+(13, '2023-06-01', NULL, 12, 'SBGR');
 
 --- DELETA TODOS OS DADOS
 -- DELETE FROM reserva;

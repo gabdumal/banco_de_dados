@@ -10,6 +10,8 @@ ALTER TABLE aeroporto
 	ADD CONSTRAINT pk_aeroporto
 	PRIMARY KEY (codigo_aeroporto);
 
+CREATE INDEX idx_aeroporto_nome_aeroporto ON aeroporto(nome_aeroporto);
+
 -- Funcionario
 CREATE TABLE funcionario (
 	id_funcionario SERIAL NOT NULL,
@@ -25,6 +27,8 @@ ALTER TABLE funcionario
 	ADD CONSTRAINT ck_funcionario_salario
 	CHECK (salario > 0);
 
+CREATE INDEX idx_funcionario_nome ON funcionario(nome);
+
 -- Passageiro
 CREATE TABLE passageiro (
 	id_passageiro SERIAL NOT NULL,
@@ -37,6 +41,8 @@ CREATE TABLE passageiro (
 ALTER TABLE passageiro
 	ADD CONSTRAINT pk_passageiro
 	PRIMARY KEY (id_passageiro);
+
+CREATE INDEX idx_passageiro_nome ON passageiro(nome);
 
 -- Aeronave
 /* Classificação quanto ao tipo de motor
@@ -60,6 +66,8 @@ ALTER TABLE aeronave
 	ADD CONSTRAINT ck_aeronave_capacidade
 	CHECK (capacidade > 0);
 
+CREATE INDEX idx_aeronave_tipo_aeronave ON aeronave(tipo_aeronave);
+
 -- Voo
 CREATE TABLE voo (
 	numero_voo TEXT NOT NULL,
@@ -79,6 +87,9 @@ ALTER TABLE voo
 	ADD CONSTRAINT ck_voo_hora_chegada
 	CHECK (hora_chegada > hora_partida);
 
+CREATE INDEX idx_voo_aeroporto_partida ON voo(aeroporto_partida);
+CREATE INDEX idx_voo_aeroporto_chegada ON voo(aeroporto_chegada);
+	
 -- Bilhete
 CREATE TABLE bilhete (
 	numero_bilhete TEXT NOT NULL,
@@ -93,7 +104,8 @@ ALTER TABLE bilhete
 ALTER TABLE bilhete
 	ADD CONSTRAINT ck_bilhete_preco_bilhete
 	CHECK (preco_bilhete >= 0);
-
+	
+CREATE INDEX idx_bilhete_numero_voo ON bilhete(numero_voo);
 
 --- RELACIONAMENTOS
 ALTER TABLE bilhete
@@ -125,6 +137,9 @@ ALTER TABLE reserva
 	ON UPDATE CASCADE
 	ON DELETE RESTRICT;
 
+CREATE INDEX idx_reserva_id_passageiro ON reserva(id_passageiro);
+CREATE INDEX idx_reserva_numero_voo ON reserva(numero_voo);
+	
 ALTER TABLE voo
 	ADD COLUMN id_aeronave INTEGER NOT NULL;
 ALTER TABLE voo
@@ -171,9 +186,8 @@ ALTER TABLE emprego
 	ON UPDATE CASCADE
 	ON DELETE RESTRICT;
 
-
---- ÍNDICES
--- ...
+CREATE INDEX idx_emprego_id_funcionario ON emprego(id_funcionario);
+CREATE INDEX idx_emprego_codigo_aeroporto ON emprego(codigo_aeroporto);
 
 
 --- EXCLUSÃO DAS TABELAS
