@@ -121,6 +121,7 @@ INSERT INTO emprego (id_emprego, data_inicio, data_fim, id_funcionario, codigo_a
 (12, '2022-11-01', '2023-06-30', 11, 'EGLL'),
 (13, '2023-06-01', NULL, 12, 'SBGR');
 
+
 --- DELETA TODOS OS DADOS
 -- DELETE FROM reserva;
 -- DELETE FROM emprego;

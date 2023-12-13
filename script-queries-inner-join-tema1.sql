@@ -7,8 +7,8 @@ SELECT vo.numero_voo, vo.aeroporto_partida,  vo.hora_partida, vo.aeroporto_chega
 	vo.tipo_aeronave as tipo_aeronave_esperado, an.id_aeronave, an.tipo_aeronave,
 	an.capacidade
 FROM voo vo
-INNER JOIN aeronave an
-	ON vo.id_aeronave = an.id_aeronave
+INNER JOIN aeronave an ON vo.id_aeronave = an.id_aeronave
+WHERE vo.hora_partida >= '2023-12-07 12:00:00'
 ORDER BY vo.hora_partida;
 
 /* 
@@ -24,7 +24,11 @@ INNER JOIN voo vo ON bi.numero_voo = vo.numero_voo
 INNER JOIN passageiro pa ON bi.id_passageiro = pa.id_passageiro
 ORDER BY vo.hora_partida;
 
--- Query 3: Retorna as reservas feitas, incluindo os detalhes dos voos associados a essas reservas e os aeroportos de partida e chegada desses voos
+/*
+Query 3: Retorna as reservas feitas, incluindo os detalhes dos voos associados a essas reservas e os aeroportos de partida e
+chegada desses voos, limitando por um intervalo de data da reserva.
+Essa query é útil para avaliar que voos foram mais reservados em determinados períodos.
+*/
 SELECT re.id_reserva, re.data_reserva, re.numero_voo,
 	vo.id_aeronave, vo.tipo_aeronave,
 	vo.aeroporto_partida, vo.hora_partida, ap.nome_aeroporto AS nome_aeroporto_partida, ap.localizacao AS localizacao_aeroporto_partida,
@@ -32,10 +36,11 @@ SELECT re.id_reserva, re.data_reserva, re.numero_voo,
 FROM reserva re
 INNER JOIN voo vo ON re.numero_voo = vo.numero_voo
 INNER JOIN aeroporto ap ON vo.aeroporto_partida = ap.codigo_aeroporto
-INNER JOIN aeroporto ac ON vo.aeroporto_chegada = ac.codigo_aeroporto;
+INNER JOIN aeroporto ac ON vo.aeroporto_chegada = ac.codigo_aeroporto
+WHERE re.data_reserva >= '2023-11-30 08:45:00' AND re.data_reserva <= '2023-12-05 13:30:00';
 
 /*
-Query 4: Retorna informações sobre os empregos dos funcionários, incluindo os detalhes dos aeroportos onde estão empregados
+Query 4: Retorna informações sobre os empregos dos funcionários, incluindo os detalhes dos aeroportos onde estão empregados.
 Ordena prioritariamente os funcionários ativos (que não têm data de fim do emprego). Secundariamente, ordena os registros de
 emprego que forem mais antigos.
 */
@@ -47,11 +52,20 @@ INNER JOIN funcionario fu ON em.id_funcionario = fu.id_funcionario
 INNER JOIN aeroporto ap ON em.codigo_aeroporto = ap.codigo_aeroporto
 ORDER BY data_fim DESC, data_inicio ASC;
 
--- Query 5: Obtém os detalhes dos voos, juntamente com as informações dos aeroportos de partida e chegada
-SELECT v.*, ap.nome_aeroporto AS aeroporto_partida, ac.nome_aeroporto AS aeroporto_chegada
-FROM voo v
-INNER JOIN aeroporto ap ON v.aeroporto_partida = ap.codigo_aeroporto
-INNER JOIN aeroporto ac ON v.aeroporto_chegada = ac.codigo_aeroporto;
+/*
+Query 5: Retorna informações sobre todos os voos em que determinado passageiro viajou.
+Essa informação é útil por questões de segurança, gerando um histórico das movimentações de uma pessoa.
+*/
+SELECT pa.id_passageiro, pa.nome, pa.sobrenome, pa.telefone, pa.endereco, pa.email,
+	bi.numero_bilhete, bi.numero_voo, bi.numero_assento, bi.preco_bilhete,
+	vo.id_aeronave, vo.tipo_aeronave, vo.aeroporto_partida, vo.hora_partida, vo.aeroporto_chegada, vo.hora_chegada,
+	an.capacidade
+FROM passageiro pa
+INNER JOIN bilhete bi ON bi.id_passageiro = pa.id_passageiro
+INNER JOIN voo vo ON vo.numero_voo = bi.numero_voo
+INNER JOIN aeronave an ON an.id_aeronave = vo.id_aeronave
+WHERE pa.id_passageiro = '3';
+
 
 --- QUERIES AUXILIARES
 -- SELECT * FROM reserva;
